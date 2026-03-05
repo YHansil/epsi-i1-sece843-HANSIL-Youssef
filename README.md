@@ -185,7 +185,7 @@ ESPI_SecuByDesign/
 ├── .env                        # VAULT_TOKEN uniquement (exclu de Git, à créer)
 ├── .gitignore                  # Exclut .env du dépôt
 │
-├── app/                        # Code source
+├── src/                        # Code source
 │   ├── app.py                  # Application Flask principale
 │   ├── requirements.txt        # Dépendances Python
 │   ├── templates/              # Templates HTML (Jinja2)

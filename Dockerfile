@@ -8,11 +8,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 # Installer les dépendances Python
-COPY app/requirements.txt .
+COPY src/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copier le code applicatif
-COPY app/ .
+COPY src/ .
 
 EXPOSE 5000
 
