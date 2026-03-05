@@ -25,9 +25,9 @@ VAULT_TOKEN="${VAULT_TOKEN:-myroot}"
 
 DB_HOST="${DB_HOST:-mariadb}"
 DB_PORT="${DB_PORT:-3306}"
-DB_NAME="${DB_NAME:-secuapp}"
-DB_USER="${DB_USER:-appuser}"
-DB_PASSWORD="${DB_PASSWORD:-AppSecurePass42!}"
+DB_NAME="${DB_NAME:-secubydesign}"
+DB_USER="${DB_USER:-secuby}"
+DB_PASSWORD="${DB_PASSWORD:-Sec7By9Des!gn@2024#Xk3}"
 
 APP_PEPPER="${APP_PEPPER:-X9kPz2mQvR7wYjN4uFhB3sLp8dE6cT1a}"
 APP_SECRET_KEY="${APP_SECRET_KEY:-FlaskSuperSecretKey2024SecuByDesign!}"

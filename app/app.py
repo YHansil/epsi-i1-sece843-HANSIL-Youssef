@@ -289,27 +289,8 @@ def register():
     if len(username) > 50:
         errors.append(
             "Le nom d'utilisateur ne peut pas depasser 50 caracteres.")
-    if not password or len(password) < 20:
-        errors.append(
-            'Le mot de passe doit contenir au moins 20 caracteres.')
-    else:
-        # Compter les types de caracteres
-        nb_lower = sum(1 for c in password if c.islower())
-        nb_upper = sum(1 for c in password if c.isupper())
-        nb_digit = sum(1 for c in password if c.isdigit())
-        nb_special = sum(1 for c in password if not c.isalnum())
-        if nb_lower < 3:
-            errors.append(
-                'Le mot de passe doit contenir au moins 3 lettres minuscules.')
-        if nb_upper < 3:
-            errors.append(
-                'Le mot de passe doit contenir au moins 3 lettres majuscules.')
-        if nb_digit < 3:
-            errors.append(
-                'Le mot de passe doit contenir au moins 3 chiffres.')
-        if nb_special < 3:
-            errors.append(
-                'Le mot de passe doit contenir au moins 3 caracteres speciaux.')
+    if not password:
+        errors.append('Le mot de passe est requis.')
     if password != password_confirm:
         errors.append('Les mots de passe ne correspondent pas.')
 
@@ -420,13 +401,13 @@ def login():
         conn.close()
 
     if not user:
-        flash('Identifiants incorrects.', 'danger')
+        flash('Identifiant et mot de passe incorrects.', 'danger')
         return render_template('login.html')
 
     # Verifier le mot de passe
     if not verify_password(password, user['password_hash'],
                            user['salt'], PEPPER):
-        flash('Identifiants incorrects.', 'danger')
+        flash('Identifiant et mot de passe incorrects.', 'danger')
         return render_template('login.html')
 
     # Mot de passe OK -> verification OTP
