@@ -1,0 +1,106 @@
+version: '3.8'
+
+services:
+  # ============================================
+  # MariaDB - Base de données
+  # ============================================
+  mariadb:
+    image: mariadb:10.11
+    container_name: secubydesign-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword123}
+      MYSQL_DATABASE: ${DB_NAME:-secuapp}
+      MYSQL_USER: ${DB_USER:-appuser}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-AppSecurePass42!}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "healthcheck.sh --connect --innodb_initialized"]
+      start_period: 15s
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - app-network
+
+  # ============================================
+  # HashiCorp Vault - Gestionnaire de secrets
+  # ============================================
+  vault:
+    image: hashicorp/vault:1.15
+    container_name: secubydesign-vault
+    restart: unless-stopped
+    cap_add:
+      - IPC_LOCK
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: ${VAULT_TOKEN:-myroot}
+      VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+      VAULT_ADDR: http://127.0.0.1:8200
+    ports:
+      - "8200:8200"
+    healthcheck:
+      test: ["CMD", "vault", "status"]
+      start_period: 5s
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - app-network
+
+  # ============================================
+  # Vault Init - Injection des secrets
+  # ============================================
+  vault-init:
+    image: hashicorp/vault:1.15
+    container_name: secubydesign-vault-init
+    depends_on:
+      vault:
+        condition: service_healthy
+    environment:
+      VAULT_ADDR: http://vault:8200
+      VAULT_TOKEN: ${VAULT_TOKEN:-myroot}
+      DB_HOST: mariadb
+      DB_PORT: "3306"
+      DB_NAME: ${DB_NAME:-secuapp}
+      DB_USER: ${DB_USER:-appuser}
+      DB_PASSWORD: ${DB_PASSWORD:-AppSecurePass42!}
+      APP_PEPPER: ${APP_PEPPER:-X9kPz2mQvR7wYjN4uFhB3sLp8dE6cT1a}
+      APP_SECRET_KEY: ${APP_SECRET_KEY:-FlaskSuperSecretKey2024SecuByDesign!}
+    volumes:
+      - ./scripts/init_vault.sh:/init_vault.sh:ro
+    entrypoint: /bin/sh
+    command: ["-c", "tr -d '\\r' < /init_vault.sh | sh"]
+    restart: "no"
+    networks:
+      - app-network
+
+  # ============================================
+  # Application Flask
+  # ============================================
+  app:
+    build: .
+    container_name: secubydesign-app
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      vault-init:
+        condition: service_completed_successfully
+    environment:
+      VAULT_ADDR: http://vault:8200
+      VAULT_TOKEN: ${VAULT_TOKEN:-myroot}
+    ports:
+      - "5000:5000"
+    networks:
+      - app-network
+
+volumes:
+  mariadb_data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge

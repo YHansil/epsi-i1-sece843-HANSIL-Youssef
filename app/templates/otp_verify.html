@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title_extra %} - Verification OTP{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Verification 2FA</h2>
+
+    <div class="otp-verify-info">
+        <p>Bonjour <strong>{{ username }}</strong>,</p>
+        <p>Entrez le code a 6 chiffres affiche dans votre
+           application d'authentification :</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('otp_verify') }}" autocomplete="off">
+        <div class="form-group otp-input-group">
+            <label for="otp_code">Code OTP</label>
+            <input type="text" id="otp_code" name="otp_code"
+                   placeholder="000000"
+                   required pattern="[0-9]{6}"
+                   maxlength="6"
+                   inputmode="numeric"
+                   autocomplete="one-time-code"
+                   autofocus>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Verifier
+        </button>
+    </form>
+
+    <div class="form-footer">
+        <a href="{{ url_for('login') }}">&larr; Retour a la connexion</a>
+    </div>
+</div>
+{% endblock %}

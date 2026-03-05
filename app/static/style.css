@@ -1,0 +1,338 @@
+/* =============================================
+   SecuByDesign - Styles
+   ============================================= */
+
+/* --- Reset & Base --- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+}
+
+/* --- Container --- */
+.container {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    padding-top: 30px;
+}
+
+/* --- Header --- */
+header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.lock-icon {
+    font-size: 2rem;
+}
+
+header h1 {
+    color: #fff;
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* --- Card --- */
+.card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 35px 30px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.card h2 {
+    text-align: center;
+    color: #302b63;
+    font-size: 1.4rem;
+    margin-bottom: 25px;
+    font-weight: 600;
+}
+
+/* --- Forms --- */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 6px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    outline: none;
+}
+
+.form-group input:focus {
+    border-color: #302b63;
+    box-shadow: 0 0 0 3px rgba(48, 43, 99, 0.15);
+}
+
+.form-group input::placeholder {
+    color: #aaa;
+}
+
+/* --- Buttons --- */
+.btn {
+    display: block;
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.3s, transform 0.1s;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #302b63, #24243e);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #3d3775, #302b63);
+}
+
+.btn-logout {
+    background: #e74c3c;
+    color: #fff;
+    margin-top: 20px;
+}
+
+.btn-logout:hover {
+    background: #c0392b;
+}
+
+/* --- Alerts --- */
+.alerts {
+    margin-bottom: 20px;
+}
+
+.alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-danger {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.alert-warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+.alert-info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+/* --- CAPTCHA --- */
+.captcha-group .captcha-container {
+    text-align: center;
+    margin: 10px 0;
+}
+
+.captcha-image {
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    max-width: 100%;
+    height: auto;
+}
+
+/* --- OTP Setup --- */
+.otp-setup-info {
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.otp-setup-info ul {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+.otp-setup-info li {
+    margin-bottom: 4px;
+    color: #555;
+}
+
+.qr-container {
+    text-align: center;
+    margin: 25px 0;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.qr-code {
+    max-width: 200px;
+    height: auto;
+}
+
+.otp-manual {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.otp-manual p {
+    margin-bottom: 10px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.otp-secret {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+    color: #302b63;
+    font-weight: 700;
+    user-select: all;
+}
+
+.otp-warning {
+    background: #fff3cd;
+    color: #856404;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid #ffeeba;
+    margin: 20px 0;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+
+/* --- OTP Verify --- */
+.otp-verify-info {
+    text-align: center;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.otp-input-group input {
+    text-align: center;
+    font-size: 1.5rem;
+    letter-spacing: 8px;
+    font-weight: 700;
+}
+
+/* --- Home / Welcome --- */
+.home-card {
+    text-align: center;
+}
+
+.welcome-icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
+}
+
+.welcome-message {
+    text-align: left;
+    margin: 20px 0;
+    line-height: 1.7;
+}
+
+.welcome-message ul {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+.welcome-message li {
+    margin-bottom: 6px;
+    color: #555;
+}
+
+/* --- Form Footer --- */
+.form-footer {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid #eee;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.form-footer a {
+    color: #302b63;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.form-footer a:hover {
+    text-decoration: underline;
+}
+
+/* --- Footer --- */
+footer {
+    text-align: center;
+    margin-top: 25px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8rem;
+}
+
+/* --- Responsive --- */
+@media (max-width: 520px) {
+    .container {
+        padding-top: 15px;
+    }
+
+    .card {
+        padding: 25px 20px;
+    }
+
+    header h1 {
+        font-size: 1.4rem;
+    }
+}

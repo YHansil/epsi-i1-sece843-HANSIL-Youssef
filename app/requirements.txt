@@ -1,0 +1,6 @@
+flask
+pymysql
+pyotp
+qrcode[pil]
+Pillow
+hvac

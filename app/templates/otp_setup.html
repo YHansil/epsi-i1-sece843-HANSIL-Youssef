@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title_extra %} - Configuration 2FA{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Configuration de l'authentification 2FA</h2>
+
+    <div class="otp-setup-info">
+        <p>Bienvenue <strong>{{ username }}</strong> ! Pour securiser votre
+           compte, scannez le QR code ci-dessous avec une application
+           d'authentification :</p>
+        <ul>
+            <li>Google Authenticator</li>
+            <li>Microsoft Authenticator</li>
+            <li>Authy</li>
+            <li>FreeOTP</li>
+        </ul>
+    </div>
+
+    <div class="qr-container">
+        <img src="data:image/png;base64,{{ qr_code }}"
+             alt="QR Code OTP" class="qr-code">
+    </div>
+
+    <div class="otp-manual">
+        <p>Ou entrez manuellement cette cle secrete :</p>
+        <code class="otp-secret">{{ otp_secret }}</code>
+    </div>
+
+    <div class="otp-warning">
+        <strong>Important :</strong> Conservez cette cle en lieu sur.
+        Elle ne sera plus affichee apres avoir quitte cette page.
+    </div>
+
+    <a href="{{ url_for('login') }}" class="btn btn-primary">
+        J'ai configure mon application &rarr; Se connecter
+    </a>
+</div>
+{% endblock %}
