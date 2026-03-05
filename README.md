@@ -140,10 +140,10 @@ chmod +x scripts/install_docker.sh
 # Puis se déconnecter/reconnecter ou : newgrp docker
 ```
 
-### 2. Configurer les variables d'environnement
+### 2. Créer le fichier `.env`
 
 ```bash
-cp .env.example .env
+echo "VAULT_TOKEN=myroot" > .env
 ```
 
 Le `.env` ne contient que le **`VAULT_TOKEN`** (token root Vault en mode développement). Tous les autres secrets (credentials DB, poivre, clé de session) sont définis dans `scripts/init_vault.sh` et injectés directement dans Vault.
@@ -182,8 +182,7 @@ Ouvrir : **http://localhost:5000**
 ESPI_SecuByDesign/
 ├── docker-compose.yml          # Orchestration des 4 services
 ├── Dockerfile                  # Image Docker de l'app Flask
-├── .env.example                # Variables d'environnement (modèle à copier en .env)
-├── .env                        # Variables d'environnement réelles (exclu de Git)
+├── .env                        # VAULT_TOKEN uniquement (exclu de Git, à créer)
 ├── .gitignore                  # Exclut .env du dépôt
 │
 ├── app/                        # Code source
