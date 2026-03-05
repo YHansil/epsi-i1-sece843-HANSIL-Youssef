@@ -6,12 +6,9 @@
 #
 # Utilise par :
 #   - Le service docker-compose 'vault-init' (automatiquement)
-#   - Ou manuellement : ./scripts/init_vault.sh
 #
-# Variables d'environnement utilisees (avec valeurs par defaut) :
-#   VAULT_ADDR, VAULT_TOKEN,
-#   DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD,
-#   APP_PEPPER, APP_SECRET_KEY
+# Tous les secrets sont definis ici et injectes dans Vault.
+# Le .env ne contient que le VAULT_TOKEN.
 # =============================================================
 set -e
 
@@ -19,18 +16,20 @@ echo "=========================================="
 echo " SecuByDesign - Initialisation de Vault"
 echo "=========================================="
 
-# ------ Variables avec valeurs par defaut ------
+# ------ Vault connexion (VAULT_TOKEN vient du .env via docker-compose) ------
 VAULT_ADDR="${VAULT_ADDR:-http://127.0.0.1:8200}"
 VAULT_TOKEN="${VAULT_TOKEN:-myroot}"
 
-DB_HOST="${DB_HOST:-mariadb}"
-DB_PORT="${DB_PORT:-3306}"
-DB_NAME="${DB_NAME:-secubydesign}"
-DB_USER="${DB_USER:-secuby}"
-DB_PASSWORD="${DB_PASSWORD:-Sec7By9Des!gn@2024#Xk3}"
+# ------ Secrets DB (stockes uniquement dans Vault) ------
+DB_HOST="mariadb"
+DB_PORT="3306"
+DB_NAME="secubydesign"
+DB_USER="secuby"
+DB_PASSWORD="Sec7By9Des!gn@2024#Xk3"
 
-APP_PEPPER="${APP_PEPPER:-X9kPz2mQvR7wYjN4uFhB3sLp8dE6cT1a}"
-APP_SECRET_KEY="${APP_SECRET_KEY:-FlaskSuperSecretKey2024SecuByDesign!}"
+# ------ Secrets applicatifs (stockes uniquement dans Vault) ------
+APP_PEPPER="X9kPz2mQvR7wYjN4uFhB3sLp8dE6cT1a"
+APP_SECRET_KEY="FlaskSuperSecretKey2024SecuByDesign!"
 
 export VAULT_ADDR
 export VAULT_TOKEN

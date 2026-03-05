@@ -97,14 +97,14 @@ hash = PBKDF2-HMAC-SHA256(
 
 ## Gestion des secrets avec Vault
 
-**Aucun credential n'est écrit en clair dans le code source.** L'application interroge Vault au démarrage :
+**Aucun credential n'est écrit en clair dans le code source de l'application.** Seul le `VAULT_TOKEN` est stocké dans le `.env`. Tous les autres secrets sont définis dans `scripts/init_vault.sh` et injectés dans Vault au démarrage :
 
 | Chemin Vault | Clés | Description |
 |---|---|---|
 | `secret/db` | `host`, `port`, `name`, `user`, `password` | Connexion à MariaDB |
 | `secret/app` | `pepper`, `secret_key` | Poivre (hachage) + clé de session Flask |
 
-Le script `scripts/init_vault.sh` injecte automatiquement ces secrets au lancement de l'infrastructure.
+L'application Flask récupère **tous** ses secrets depuis Vault au démarrage — elle ne lit jamais le `.env` directement.
 
 ---
 
@@ -115,7 +115,8 @@ Le script `scripts/init_vault.sh` injecte automatiquement ces secrets au lanceme
 - [x] Authentification **2FA** via TOTP (RFC 6238)
 - [x] **CAPTCHA texte** sur le formulaire d'inscription
 - [x] **Politique de mot de passe** stricte (20 car., complexité)
-- [x] Credentials DB dans **HashiCorp Vault** (pas en clair dans les fichiers)
+- [x] Credentials DB dans **HashiCorp Vault** (pas en clair dans les fichiers de config)
+- [x] `.env` minimaliste : seul le **VAULT_TOKEN** y figure
 - [x] Cookies de session **HttpOnly** + **SameSite=Lax**
 - [x] Requêtes SQL **paramétrées** (protection injection SQL)
 - [x] Application conteneurisée avec **réseau Docker isolé**
@@ -145,7 +146,7 @@ chmod +x scripts/install_docker.sh
 cp .env.example .env
 ```
 
-Le fichier `.env.example` contient des valeurs par défaut fonctionnelles. Vous pouvez les modifier dans `.env` selon vos besoins. Le `.env` est exclu du dépôt Git (`.gitignore`) pour ne pas exposer les secrets.
+Le `.env` ne contient que le **`VAULT_TOKEN`** (token root Vault en mode développement). Tous les autres secrets (credentials DB, poivre, clé de session) sont définis dans `scripts/init_vault.sh` et injectés directement dans Vault.
 
 ### 3. Lancer l'application
 

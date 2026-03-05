@@ -9,10 +9,10 @@ services:
     container_name: secubydesign-db
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword123}
-      MYSQL_DATABASE: ${DB_NAME:-secubydesign}
-      MYSQL_USER: ${DB_USER:-secuby}
-      MYSQL_PASSWORD: ${DB_PASSWORD:-Sec7By9Des!gn@2024#Xk3}
+      MYSQL_ROOT_PASSWORD: rootpassword123
+      MYSQL_DATABASE: secubydesign
+      MYSQL_USER: secuby
+      MYSQL_PASSWORD: "Sec7By9Des!gn@2024#Xk3"
     ports:
       - "3307:3306"
     volumes:
@@ -62,13 +62,6 @@ services:
     environment:
       VAULT_ADDR: http://vault:8200
       VAULT_TOKEN: ${VAULT_TOKEN:-myroot}
-      DB_HOST: mariadb
-      DB_PORT: "3306"
-      DB_NAME: ${DB_NAME:-secubydesign}
-      DB_USER: ${DB_USER:-secuby}
-      DB_PASSWORD: ${DB_PASSWORD:-Sec7By9Des!gn@2024#Xk3}
-      APP_PEPPER: ${APP_PEPPER:-X9kPz2mQvR7wYjN4uFhB3sLp8dE6cT1a}
-      APP_SECRET_KEY: ${APP_SECRET_KEY:-FlaskSuperSecretKey2024SecuByDesign!}
     volumes:
       - ./scripts/init_vault.sh:/init_vault.sh:ro
     entrypoint: /bin/sh
