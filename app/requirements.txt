@@ -4,3 +4,4 @@ pyotp
 qrcode[pil]
 Pillow
 hvac
+captcha

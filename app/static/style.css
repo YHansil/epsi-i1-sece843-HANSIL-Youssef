@@ -101,6 +101,14 @@ header h1 {
     color: #aaa;
 }
 
+.password-hint {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.78rem;
+    color: #888;
+    line-height: 1.4;
+}
+
 /* --- Buttons --- */
 .btn {
     display: block;

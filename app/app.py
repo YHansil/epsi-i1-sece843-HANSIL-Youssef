@@ -1,7 +1,7 @@
 """
 SecuByDesign - Mini application web securisee
 ==============================================
-- Inscription avec CAPTCHA (math-based)
+- Inscription avec CAPTCHA texte (librairie captcha)
 - Connexion avec authentification 2FA / OTP (TOTP)
 - Mots de passe hashes avec sel unique par utilisateur + poivre
 - Credentials DB stockes dans HashiCorp Vault
@@ -24,7 +24,9 @@ import pymysql
 import pyotp
 import qrcode
 from PIL import Image, ImageDraw, ImageFont
+from captcha.image import ImageCaptcha
 import hvac
+import string
 
 
 # =====================================================
@@ -178,76 +180,30 @@ def verify_password(password, stored_hash, salt, pepper):
 
 
 # =====================================================
-# CAPTCHA (math-based, genere avec Pillow)
+# CAPTCHA (texte deforme via librairie 'captcha')
 # =====================================================
+
+# Instance globale du generateur de CAPTCHA
+_captcha_generator = ImageCaptcha(width=280, height=90)
+
 
 def generate_captcha():
     """
-    Genere un CAPTCHA mathematique sous forme d'image PNG base64.
-    Retourne (image_base64, reponse_attendue).
+    Genere un CAPTCHA texte deforme sous forme d'image PNG base64.
+    Utilise la librairie 'captcha' qui applique automatiquement
+    des deformations, du bruit et des courbes.
+    Retourne (image_base64, texte_attendu).
     """
-    num1 = random.randint(1, 20)
-    num2 = random.randint(1, 10)
+    # Generer un texte aleatoire de 5 caracteres (lettres maj + chiffres)
+    # On exclut les caracteres ambigus : 0/O, 1/I/l
+    allowed_chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+    captcha_text = ''.join(random.choices(allowed_chars, k=5))
 
-    operations = [
-        ('+', num1 + num2),
-        ('-', num1 - num2),
-        ('x', num1 * num2),
-    ]
-    op_symbol, result = random.choice(operations)
-    text = f"{num1} {op_symbol} {num2} = ?"
+    # Generer l'image CAPTCHA (deformee automatiquement)
+    img_data = _captcha_generator.generate(captcha_text)
+    img_base64 = base64.b64encode(img_data.getvalue()).decode('utf-8')
 
-    # Creer l'image
-    width, height = 240, 80
-    img = Image.new('RGB', (width, height), color=(250, 250, 250))
-    draw = ImageDraw.Draw(img)
-
-    # Bruit : lignes aleatoires
-    for _ in range(6):
-        x1, y1 = random.randint(0, width), random.randint(0, height)
-        x2, y2 = random.randint(0, width), random.randint(0, height)
-        color = (
-            random.randint(150, 220),
-            random.randint(150, 220),
-            random.randint(150, 220)
-        )
-        draw.line([(x1, y1), (x2, y2)], fill=color, width=2)
-
-    # Bruit : points aleatoires
-    for _ in range(300):
-        x, y = random.randint(0, width), random.randint(0, height)
-        color = (
-            random.randint(100, 220),
-            random.randint(100, 220),
-            random.randint(100, 220)
-        )
-        draw.point((x, y), fill=color)
-
-    # Police
-    try:
-        font = ImageFont.truetype(
-            "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 32
-        )
-    except (IOError, OSError):
-        font = ImageFont.load_default()
-
-    # Centrer le texte
-    bbox = draw.textbbox((0, 0), text, font=font)
-    text_w = bbox[2] - bbox[0]
-    text_h = bbox[3] - bbox[1]
-    x = (width - text_w) // 2
-    y = (height - text_h) // 2
-
-    # Ombre + texte
-    draw.text((x + 1, y + 1), text, fill=(120, 120, 120), font=font)
-    draw.text((x, y), text, fill=(20, 20, 80), font=font)
-
-    # Convertir en base64
-    buf = BytesIO()
-    img.save(buf, format='PNG')
-    img_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')
-
-    return img_base64, str(result)
+    return img_base64, captcha_text
 
 
 # =====================================================
@@ -317,8 +273,8 @@ def register():
     password_confirm = request.form.get('password_confirm', '')
     captcha_input = request.form.get('captcha', '').strip()
 
-    # Validation du CAPTCHA
-    if captcha_input != session.get('captcha_answer'):
+    # Validation du CAPTCHA (insensible a la casse)
+    if captcha_input.upper() != session.get('captcha_answer', '').upper():
         flash('CAPTCHA incorrect. Veuillez reessayer.', 'danger')
         captcha_img, captcha_answer = generate_captcha()
         session['captcha_answer'] = captcha_answer
@@ -333,9 +289,27 @@ def register():
     if len(username) > 50:
         errors.append(
             "Le nom d'utilisateur ne peut pas depasser 50 caracteres.")
-    if not password or len(password) < 8:
+    if not password or len(password) < 20:
         errors.append(
-            'Le mot de passe doit contenir au moins 8 caracteres.')
+            'Le mot de passe doit contenir au moins 20 caracteres.')
+    else:
+        # Compter les types de caracteres
+        nb_lower = sum(1 for c in password if c.islower())
+        nb_upper = sum(1 for c in password if c.isupper())
+        nb_digit = sum(1 for c in password if c.isdigit())
+        nb_special = sum(1 for c in password if not c.isalnum())
+        if nb_lower < 3:
+            errors.append(
+                'Le mot de passe doit contenir au moins 3 lettres minuscules.')
+        if nb_upper < 3:
+            errors.append(
+                'Le mot de passe doit contenir au moins 3 lettres majuscules.')
+        if nb_digit < 3:
+            errors.append(
+                'Le mot de passe doit contenir au moins 3 chiffres.')
+        if nb_special < 3:
+            errors.append(
+                'Le mot de passe doit contenir au moins 3 caracteres speciaux.')
     if password != password_confirm:
         errors.append('Les mots de passe ne correspondent pas.')
 
