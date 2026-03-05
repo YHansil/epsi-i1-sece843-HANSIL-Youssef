@@ -54,19 +54,7 @@ Ce projet met en pratique les notions de sécurité applicative vues en cours :
 - **CAPTCHA texte** généré via la librairie `captcha` (caractères déformés avec bruit et courbes)
 - Vérification insensible à la casse
 
-### 2. Politique de mot de passe forte
-
-Le mot de passe doit respecter :
-
-| Critère | Exigence |
-|---|---|
-| Longueur | 20 caractères minimum |
-| Minuscules | Au moins 3 |
-| Majuscules | Au moins 3 |
-| Chiffres | Au moins 3 |
-| Caractères spéciaux | Au moins 3 |
-
-### 3. Hachage sécurisé (sel + poivre)
+### 2. Hachage sécurisé (sel + poivre)
 
 ```
 hash = PBKDF2-HMAC-SHA256(
@@ -80,14 +68,14 @@ hash = PBKDF2-HMAC-SHA256(
 - **Poivre** : secret global, stocké dans Vault (**jamais en base de données**)
 - Même si la BDD est compromise, les hash ne sont pas exploitables sans le poivre
 
-### 4. Connexion avec 2FA / OTP
+### 3. Connexion avec 2FA / OTP
 
 - **Étape 1** : saisie identifiant + mot de passe → vérification contre le hash
 - **Étape 2** : saisie du code OTP à 6 chiffres (TOTP, RFC 6238)
 - Compatible : Google Authenticator, Microsoft Authenticator, Authy, FreeOTP
 - QR code affiché à l'inscription pour configurer l'application 2FA
 
-### 5. Page d'accueil
+### 4. Page d'accueil
 
 - Accessible uniquement après authentification complète (identifiants + OTP)
 - Affiche le nom d'utilisateur et un message de bienvenue
@@ -114,7 +102,6 @@ L'application Flask récupère **tous** ses secrets depuis Vault au démarrage �
 - [x] **Poivre** (pepper) stocké hors de la base de données (dans Vault)
 - [x] Authentification **2FA** via TOTP (RFC 6238)
 - [x] **CAPTCHA texte** sur le formulaire d'inscription
-- [x] **Politique de mot de passe** stricte (20 car., complexité)
 - [x] Credentials DB dans **HashiCorp Vault** (pas en clair dans les fichiers de config)
 - [x] `.env` minimaliste : seul le **VAULT_TOKEN** y figure
 - [x] Cookies de session **HttpOnly** + **SameSite=Lax**
@@ -168,7 +155,7 @@ Ouvrir : **http://localhost:5000**
 
 ## Utilisation
 
-1. **Créer un compte** sur `/register` (remplir le CAPTCHA, respecter la politique de mdp)
+1. **Créer un compte** sur `/register` (remplir le CAPTCHA)
 2. **Scanner le QR code** avec Google Authenticator / Authy / Microsoft Authenticator
 3. **Se connecter** sur `/login` avec ses identifiants
 4. **Entrer le code OTP** à 6 chiffres de l'application 2FA
