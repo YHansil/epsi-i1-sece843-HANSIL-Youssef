@@ -14,7 +14,6 @@ Ce projet met en pratique les notions de sécurité applicative vues en cours :
 - **Hachage renforcé** des mots de passe (PBKDF2 + sel unique + poivre)
 - **Authentification 2FA** avec OTP (TOTP, compatible Google Authenticator)
 - **CAPTCHA** sur le formulaire d'inscription pour lutter contre les bots
-- **Politique de mot de passe forte** (20 caractères, complexité imposée)
 - **Conteneurisation Docker** avec réseau isolé
 
 ---
@@ -140,7 +139,15 @@ chmod +x scripts/install_docker.sh
 # Puis se déconnecter/reconnecter ou : newgrp docker
 ```
 
-### 2. Lancer l'application
+### 2. Configurer les variables d'environnement
+
+```bash
+cp .env.example .env
+```
+
+Le fichier `.env.example` contient des valeurs par défaut fonctionnelles. Vous pouvez les modifier dans `.env` selon vos besoins. Le `.env` est exclu du dépôt Git (`.gitignore`) pour ne pas exposer les secrets.
+
+### 3. Lancer l'application
 
 ```bash
 docker compose up --build -d
@@ -152,7 +159,7 @@ Docker Compose démarre automatiquement dans l'ordre :
 3. **vault-init** injecte les secrets dans Vault
 4. **Application Flask** (récupère les secrets depuis Vault)
 
-### 3. Accéder à l'application
+### 4. Accéder à l'application
 
 Ouvrir : **http://localhost:5000**
 
@@ -174,7 +181,8 @@ Ouvrir : **http://localhost:5000**
 ESPI_SecuByDesign/
 ├── docker-compose.yml          # Orchestration des 4 services
 ├── Dockerfile                  # Image Docker de l'app Flask
-├── .env                        # Variables d'environnement (infra Docker)
+├── .env.example                # Variables d'environnement (modèle à copier en .env)
+├── .env                        # Variables d'environnement réelles (exclu de Git)
 ├── .gitignore                  # Exclut .env du dépôt
 │
 ├── app/                        # Code source
